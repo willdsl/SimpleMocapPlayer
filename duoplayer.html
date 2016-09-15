@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<!-- WebGl Mocap Player 
+Code provided by Omid Alemi under the MIT License
+ -->
+<html lang="en">
+
+<head>
+    <title>WebGL Mocap Viewer</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <style>
+
+    </style>
+    <link rel="stylesheet" href="styles/pace.css"></link>
+
+    <script src="bower_components/PACE/pace.min.js"></script>
+    <script src="bower_components/mathjs/dist/math.min.js"></script>
+    <script src="bower_components/jQuery/dist/jquery.min.js"></script>
+    <script src="bower_components/three.js/build/three.js"></script>
+    <script src="bower_components/three.js/examples/js/controls/OrbitControls.js"></script>
+    <script src="bower_components/MocapJS/dist/MocapJS.js"></script>
+
+    <script src="js/skeletonFactory.js"></script>
+
+    <style>
+        #play {
+            width: 100%;
+            height: 98vh;
+            background-color: #cecece;            
+        }
+
+        #btnPlay {
+            width: 200px;
+            height: 100px;
+            margin-top: calc(40vh);
+            position: relative;
+            left: calc(50% - 100px);
+            font-size: 42px;
+            cursor: pointer;
+        }
+
+        #glcontainers {
+
+        }
+    </style>
+</head>
+
+<body>
+    <div id="play">
+        <button id="btnPlay" onclick="play()">Play</button>
+    </div>
+
+    <div id="glcontainers">
+        <div id="gl1"></div>
+        <div id="gl2"></div>
+    </div>
+
+    <script type="text/javascript">
+        var scene1, camera1, scene2, camera2, renderer;
+        var characters = [];
+        var playing = true;
+        
+
+        // Using the space bar to play/pause the animation
+        $(document).on("keypress", function(e) {
+            if (e.charCode == 32)
+                playing = !playing;
+
+            characters.forEach(function(c) {
+                c.playing = playing;
+
+                if (playing)
+                    c.animStartTimeRef = Date.now();
+                else
+                    c.animOffset = c.animIndex;
+            });
+
+        });
+
+        // Update the renderer and camera when resizeing the window
+        $(window).on("resize", function(e) {
+            camera1.aspect = (window.innerWidth/2) / window.innerHeight;
+            camera1.updateProjectionMatrix();
+
+            camera2.aspect = (window.innerWidth/2) / window.innerHeight;
+            camera2.updateProjectionMatrix();
+
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+
+        // This function sets up the scene, i.e., everything you see except the character(s) 
+        function set_the_scene(sc) {
+			
+            // Add the light            
+			light = new THREE.PointLight(0xffffff, 0.9, 0);
+			light.position.set(0, 160, 40);
+			sc.add(light);
+
+
+			// Create a grid for the floor
+			var size = 200,
+				step = 20;
+
+            // Draw the plane
+			var planeGeometry = new THREE.PlaneGeometry(size * 2, size * 2);
+			var planeMaterial = new THREE.MeshPhongMaterial({
+				color: 0x444444,
+				emissive: 0x000000,
+				specular: 0x111111,
+				side: THREE.DoubleSide,
+				transparent: true,
+				opacity: 0.6
+			});
+			var plane = new THREE.Mesh(planeGeometry, planeMaterial);
+			plane.position.set(0, 0, 0);
+			plane.rotation.set(math.pi / 2, 0, 0);
+			sc.add(plane);
+
+            //Draw the lines
+			var lineGeometry = new THREE.Geometry();
+			var lineMaterial = new THREE.LineBasicMaterial({
+				color: 0x555555,
+				linewidth: 1.2
+			});
+			for (var i = -size; i <= size; i += step) {
+				lineGeometry.vertices.push(new THREE.Vector3(-size, -0.04, i));
+				lineGeometry.vertices.push(new THREE.Vector3(size, -0.04, i));
+				lineGeometry.vertices.push(new THREE.Vector3(i, -0.04, -size));
+				lineGeometry.vertices.push(new THREE.Vector3(i, -0.04, size));
+			}
+
+			var line = new THREE.LineSegments(lineGeometry, lineMaterial);
+			sc.add(line);
+		}
+
+        // Initialize the three.js stuff
+        function load(scene, bvhURL) {        
+            // Here, we creare our characters
+            var c1 = new BVHCharacter("Walker",  // Give it a name. Usefull for debugging.
+                    jointmaterial4,  // The material that the character uses for joints. Defined in the skeletonFactory.js
+                    bonematerial5,  // The material that the character uses for bones. Defined in the skeletonFactory.js
+                    makeJointGeometry_Sphere1, // Pointer to the function that creates the geometries for joints. Defined in the skeletonFactory.js
+                    makeBoneGeometry_Cylinder2); // Pointer to the function that creates the geometries for bones. Defined in the skeletonFactory.js
+
+            c1.setOriginPosition(0, 0, 0); // We can position the character's defult position here
+            c1.loadFromURL("../bvh/"+bvhURL, function() { // Read the .bvh file
+                scene.add(c1.skeleton); // Once the character has loaded the file, we add it's skeleton to the scene 
+            });
+
+            characters.push(c1); // We add the character to the characters array so that we can update the animation            
+        }
+
+        function init() {
+            scene1 = new THREE.Scene();
+            camera1 = new THREE.PerspectiveCamera(30, (window.innerWidth/2) / window.innerHeight, 1, 2000);
+            camera1.position.set(0, 80, 0);
+            camera1.position.z = 400;
+            scene1.add(camera1);
+
+            set_the_scene(scene1);
+
+            scene2 = new THREE.Scene();
+            camera2 = new THREE.PerspectiveCamera(30, (window.innerWidth/2) / window.innerHeight, 1, 2000);
+            camera2.position.set(0, 80, 0);
+            camera2.position.z = 400;
+            scene1.add(camera2);
+
+            set_the_scene(scene2);
+        }
+
+
+        function initRenderer() {
+            // Here goes the renderer parameters
+            renderer = new THREE.WebGLRenderer({
+                antialias: true
+            });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.gammaInput = true;
+            renderer.gammaOutput = true;
+            renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.setClearColor(0xdddddd, 1);
+            
+            renderer.autoClear = false; // important!
+
+            document.body.appendChild(renderer.domElement);
+
+            // Using mouse to control the the camera
+            controls1 = new THREE.OrbitControls(camera1, renderer.domElement);
+            controls2 = new THREE.OrbitControls(camera2, renderer.domElement);
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            characters.forEach(function(c) {
+                if (c.ready && c.playing) {
+                        // Update the new frame index to be animated                   
+                        c.animIndex = c.animOffset + Math.floor((Date.now() - c.animStartTimeRef) / c.frameTime / 1000);
+
+                        // Looping back once we hit the end
+                        if (c.animIndex >= c.frameCount) {
+                            c.animOffset = 0;
+                            c.animStartTimeRef = Date.now();
+                            c.animIndex = 0;
+                        }
+
+                        // Animate!
+                        c.animFrame(c.animIndex);
+                }
+            });
+            controls1.update();
+            controls2.update();
+            
+            // Two scenes -- from:
+            //http://stackoverflow.com/questions/29267919/draw-2-scenes-in-the-same-canvas-three-js
+
+            renderer.clear();
+            renderer.setViewport( 0, 0, window.innerWidth/2, window.innerHeight );
+            renderer.render( scene1, camera1 );
+
+            renderer.clearDepth(); // important! clear the depth buffer
+            renderer.setViewport( window.innerWidth/2, 0, window.innerWidth/2, window.innerHeight );
+            renderer.render( scene2, camera2 );
+            // renderer.render(scene1, camera);
+        }
+
+	var getUrlParameter = function getUrlParameter(sParam) {
+        var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+            sURLVariables = sPageURL.split('&'),
+            sParameterName,
+            i;
+        
+        
+
+        for (i = 0; i < sURLVariables.length; i++) {
+            sParameterName = sURLVariables[i].split('=');            
+            if (sParameterName[0] === sParam) {
+                return sParameterName[1] === undefined ? true : sParameterName[1];
+            }
+        }
+    };
+    </script>
+
+
+
+
+    <script>   
+	
+    function play() {
+        
+        var bvhURL1 = getUrlParameter('file1');
+        var bvhURL2 = getUrlParameter('file2');
+        
+        if (bvhURL1 !==  undefined && bvhURL2 !==  undefined) {
+            init();
+
+            console.log("Loading " + bvhURL1);                    
+            load(scene1, bvhURL1);
+            console.log("Loading " + bvhURL2);
+            load(scene2, bvhURL2);
+
+            initRenderer();
+
+            document.getElementById("play").style.display = "none";
+            animate();
+        } else {
+            console.log("nothing to load");
+        }
+
+    }
+       
+
+
+                
+    </script>
+</body>
+
+</html>
