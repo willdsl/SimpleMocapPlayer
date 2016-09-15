@@ -30,7 +30,7 @@ Code provided by Omid Alemi under the MIT License
         #btnPlay {
             width: 200px;
             height: 100px;
-            margin-top: calc(40vh);
+            margin-top: calc(30vh);
             position: relative;
             left: calc(50% - 100px);
             font-size: 42px;
@@ -50,6 +50,7 @@ Code provided by Omid Alemi under the MIT License
         var playing = true;
         var frameWidth = window.innerWidth/2 - 80;
         var frameHeight = window.innerHeight - 20;
+        var animid;
 
         // Using the space bar to play/pause the animation
         $(document).on("keypress", function(e) {
@@ -69,13 +70,15 @@ Code provided by Omid Alemi under the MIT License
 
         // Update the renderer and camera when resizeing the window
         $(window).on("resize", function(e) {
-            camera1.aspect = frameWidth / frameHeight;
-            camera1.updateProjectionMatrix();
+            if (playing){
+                camera1.aspect = frameWidth / frameHeight;
+                camera1.updateProjectionMatrix();
 
-            camera2.aspect = frameWidth / frameHeight;
-            camera2.updateProjectionMatrix();
+                camera2.aspect = frameWidth / frameHeight;
+                camera2.updateProjectionMatrix();
 
-            renderer.setSize(window.innerWidth-10, frameHeight);
+                renderer.setSize(window.innerWidth-10, frameHeight);
+            }             
         });
 
         // This function sets up the scene, i.e., everything you see except the character(s) 
@@ -180,7 +183,10 @@ Code provided by Omid Alemi under the MIT License
         }
 
         function animate() {
-            requestAnimationFrame(animate);
+            if (!playing)
+                return;
+
+            animid = requestAnimationFrame(animate);
 
             characters.forEach(function(c) {
                 if (c.ready && c.playing) {
@@ -229,9 +235,83 @@ Code provided by Omid Alemi under the MIT License
     </script>
 
     <script>   
-	
-    function play() {
+    // var mylock = Math.random();    
+
+    function empty(elem) {
+        while (elem.lastChild) elem.removeChild(elem.lastChild);
+    }
+
+    function stop() {
+        playing = false;
+        cancelAnimationFrame(animid);// Stop the animation
+        this.renderer.domElement.addEventListener('dblclick', null, false); //remove listener to render
+
+        scene1.children.forEach(function (c) {                    
+            scene1.remove( c )
+        });
+
+        scene2.children.forEach(function (c) {
+            scene2.remove( c )
+        });
+
+        characters.forEach(function (c) {
+            c.bvh = [];
+            c.boneMeshes.forEach(function (b) {
+                b.geometry.dispose();
+                b.material.dispose();
+            });
+            c.jointMeshes.forEach(function (j) {
+                j.geometry.dispose();
+                j.material.dispose();
+            });   
+        });
         
+
+        var gl = renderer.getContext();
+        
+        var numTextureUnits = gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS);
+        for (var unit = 0; unit < numTextureUnits; ++unit) {
+        gl.activeTexture(gl.TEXTURE0 + unit);
+        gl.bindTexture(gl.TEXTURE_2D, null);
+        gl.bindTexture(gl.TEXTURE_CUBE_MAP, null);
+        }
+        gl.bindBuffer(gl.ARRAY_BUFFER, null);
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
+        gl.bindRenderbuffer(gl.RENDERBUFFER, null);
+        gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+
+        // Delete all your resources
+        // Note!!!: You'd have to change this code to delete the resources YOU created.
+        // gl.deleteTexture(someTexture);
+        // gl.deleteTexture(someOtherTexture);
+        // gl.deleteBuffer(someBuffer);
+        // gl.deleteBuffer(someOtherBuffer);
+        // gl.deleteRenderbuffer(someRenderbuffer);
+        // gl.deleteFramebuffer(someFramebuffer);
+
+        this.scene1 = null;
+        this.scene2 = null;        
+        this.camera1 = null;
+        this.camera2 = null;
+        this.controls1 = null;
+        this.controls2 = null;    
+        this.renderer = null;    
+        characters = [];
+
+        
+    }
+
+    function play() {
+        // close the other one
+
+        if (window.parent !== undefined && 
+            window.parent.playerlock !== undefined) {            
+                window.parent.playerlock.stop();
+                window.parent.playerlock.location = "done.html"; 
+        }
+
+        window.parent.playerlock = window
+
         var bvhURL1 = getUrlParameter('file1');
         var bvhURL2 = getUrlParameter('file2');
         
