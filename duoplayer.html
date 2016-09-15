@@ -8,9 +8,7 @@ Code provided by Omid Alemi under the MIT License
     <title>WebGL Mocap Viewer</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-    <style>
 
-    </style>
     <link rel="stylesheet" href="styles/pace.css"></link>
 
     <script src="bower_components/PACE/pace.min.js"></script>
@@ -25,7 +23,7 @@ Code provided by Omid Alemi under the MIT License
     <style>
         #play {
             width: 100%;
-            height: 98vh;
+            height: 95vh;
             background-color: #cecece;            
         }
 
@@ -38,10 +36,6 @@ Code provided by Omid Alemi under the MIT License
             font-size: 42px;
             cursor: pointer;
         }
-
-        #glcontainers {
-
-        }
     </style>
 </head>
 
@@ -50,16 +44,12 @@ Code provided by Omid Alemi under the MIT License
         <button id="btnPlay" onclick="play()">Play</button>
     </div>
 
-    <div id="glcontainers">
-        <div id="gl1"></div>
-        <div id="gl2"></div>
-    </div>
-
     <script type="text/javascript">
         var scene1, camera1, scene2, camera2, renderer;
         var characters = [];
         var playing = true;
-        
+        var frameWidth = window.innerWidth/2 - 80;
+        var frameHeight = window.innerHeight - 20;
 
         // Using the space bar to play/pause the animation
         $(document).on("keypress", function(e) {
@@ -79,15 +69,14 @@ Code provided by Omid Alemi under the MIT License
 
         // Update the renderer and camera when resizeing the window
         $(window).on("resize", function(e) {
-            camera1.aspect = (window.innerWidth/2) / window.innerHeight;
+            camera1.aspect = frameWidth / frameHeight;
             camera1.updateProjectionMatrix();
 
-            camera2.aspect = (window.innerWidth/2) / window.innerHeight;
+            camera2.aspect = frameWidth / frameHeight;
             camera2.updateProjectionMatrix();
 
-            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setSize(window.innerWidth-10, frameHeight);
         });
-
 
         // This function sets up the scene, i.e., everything you see except the character(s) 
         function set_the_scene(sc) {
@@ -96,7 +85,6 @@ Code provided by Omid Alemi under the MIT License
 			light = new THREE.PointLight(0xffffff, 0.9, 0);
 			light.position.set(0, 160, 40);
 			sc.add(light);
-
 
 			// Create a grid for the floor
 			var size = 200,
@@ -153,7 +141,7 @@ Code provided by Omid Alemi under the MIT License
 
         function init() {
             scene1 = new THREE.Scene();
-            camera1 = new THREE.PerspectiveCamera(30, (window.innerWidth/2) / window.innerHeight, 1, 2000);
+            camera1 = new THREE.PerspectiveCamera(30, frameWidth / frameHeight, 1, 2000);
             camera1.position.set(0, 80, 0);
             camera1.position.z = 400;
             scene1.add(camera1);
@@ -161,7 +149,7 @@ Code provided by Omid Alemi under the MIT License
             set_the_scene(scene1);
 
             scene2 = new THREE.Scene();
-            camera2 = new THREE.PerspectiveCamera(30, (window.innerWidth/2) / window.innerHeight, 1, 2000);
+            camera2 = new THREE.PerspectiveCamera(30, frameWidth / frameHeight, 1, 2000);
             camera2.position.set(0, 80, 0);
             camera2.position.z = 400;
             scene1.add(camera2);
@@ -175,11 +163,12 @@ Code provided by Omid Alemi under the MIT License
             renderer = new THREE.WebGLRenderer({
                 antialias: true
             });
-            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setSize(window.innerWidth-10, frameHeight);
             renderer.gammaInput = true;
             renderer.gammaOutput = true;
             renderer.setPixelRatio(window.devicePixelRatio);
-            renderer.setClearColor(0xdddddd, 1);
+            renderer.setClearColor(0xf0f0f0, 1);
+            // renderer.setClearColor(0x000000, 1);
             
             renderer.autoClear = false; // important!
 
@@ -216,13 +205,12 @@ Code provided by Omid Alemi under the MIT License
             //http://stackoverflow.com/questions/29267919/draw-2-scenes-in-the-same-canvas-three-js
 
             renderer.clear();
-            renderer.setViewport( 0, 0, window.innerWidth/2, window.innerHeight );
+            renderer.setViewport( 40, 0, frameWidth, frameHeight );
             renderer.render( scene1, camera1 );
 
             renderer.clearDepth(); // important! clear the depth buffer
-            renderer.setViewport( window.innerWidth/2, 0, window.innerWidth/2, window.innerHeight );
-            renderer.render( scene2, camera2 );
-            // renderer.render(scene1, camera);
+            renderer.setViewport( window.innerWidth/2 +20 , 0, frameWidth, frameHeight );
+            renderer.render( scene2, camera2 );            
         }
 
 	var getUrlParameter = function getUrlParameter(sParam) {
@@ -230,8 +218,6 @@ Code provided by Omid Alemi under the MIT License
             sURLVariables = sPageURL.split('&'),
             sParameterName,
             i;
-        
-        
 
         for (i = 0; i < sURLVariables.length; i++) {
             sParameterName = sURLVariables[i].split('=');            
@@ -241,9 +227,6 @@ Code provided by Omid Alemi under the MIT License
         }
     };
     </script>
-
-
-
 
     <script>   
 	
