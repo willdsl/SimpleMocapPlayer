@@ -308,8 +308,8 @@ Code provided by Omid Alemi under the MIT License
             //     return;
             // }
             console.log(event.data);
-            
-            if (event.data.act =="stop" && event.data.uuid == window.uuid)
+
+            if (event.data.act =="stop" && event.data.uuid != window.uuid)
                 stop();
         }
 
