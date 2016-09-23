@@ -304,14 +304,6 @@ Code provided by Omid Alemi under the MIT License
     function play() {
         // close the other one
 
-        // if (window.parent !== undefined && 
-        //     window.parent.playerlock !== undefined) {            
-        //         window.parent.playerlock.stop();
-        //         window.parent.playerlock.location = "done.html"; 
-        // }
-
-        // window.parent.playerlock = window
-
         window.parent.postMessage("play", "*");
 
         var bvhURL1 = getUrlParameter('file1');
