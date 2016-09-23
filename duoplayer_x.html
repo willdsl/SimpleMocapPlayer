@@ -53,11 +53,7 @@ Code provided by Omid Alemi under the MIT License
         var animid;
 
         $(document).ready(function () {
-            frameWidth = document.documentElement.clientWidth/2 - 80;
-            frameHeight = document.documentElement.clientHeight - 20;
-
-            console.log("******* h= "+ frameHeight);
-            console.log("******* w= "+ frameWidth);
+            
         });
 
         // Using the space bar to play/pause the animation
@@ -324,6 +320,12 @@ Code provided by Omid Alemi under the MIT License
     function play() {
         // close the other one        
 
+        frameWidth = document.documentElement.clientWidth/2 - 80;
+        frameHeight = document.documentElement.clientHeight - 20;
+
+        console.log("******* h= "+ frameHeight);
+        console.log("******* w= "+ frameWidth);
+        
         if (window.addEventListener){
             addEventListener("message", listener, false)
         } else {
