@@ -52,6 +52,7 @@ Code provided by Omid Alemi under the MIT License
         var frameHeight = document.documentElement.clientHeight - 20;
         var animid;
 
+        // $(document)
         // Using the space bar to play/pause the animation
         $(document).on("keypress", function(e) {
             if (e.charCode == 32)
@@ -143,6 +144,7 @@ Code provided by Omid Alemi under the MIT License
         }
 
         function init() {
+            console.log(frameWidth);
             scene1 = new THREE.Scene();
             camera1 = new THREE.PerspectiveCamera(30, frameWidth / frameHeight, 1, 2000);
             camera1.position.set(0, 80, 0);
