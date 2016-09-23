@@ -301,19 +301,34 @@ Code provided by Omid Alemi under the MIT License
         
     }
 
+    function listener(event){
+        console.log(".......... "+ event.origin);
+            // if ( event.origin !== "https://mlab-experiments.iat.sfu.ca" ) {
+            //     console.log("n");
+            //     return;
+            // }
+            console.log(event.data);
+            
+            if (event.data.act =="stop" && event.data.uuid == window.uuid)
+                stop();
+        }
+
     function play() {
         // close the other one
 
-        // if (window.parent !== undefined && 
-        //     window.parent.playerlock !== undefined) {            
-        //         window.parent.playerlock.stop();
-        //         window.parent.playerlock.location = "done.html"; 
-        // }
+        
 
-        // window.parent.playerlock = window
+        if (window.addEventListener){
+            addEventListener("message", listener, false)
+        } else {
+            attachEvent("onmessage", listener)
+        }
+        
+        // Assing myself a uuid
+        window.uuid = guid();
 
         console.log("posting playe msg");
-        window.parent.postMessage({act:"play", uuid: guid()}, "*");
+        window.parent.postMessage({act:"play", uuid: window.uuid }, "*");
 
         var bvhURL1 = getUrlParameter('file1');
         var bvhURL2 = getUrlParameter('file2');
