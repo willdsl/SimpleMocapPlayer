@@ -1,0 +1,66 @@
+<div class="row-fluid">
+  <div class="span12">
+    
+    <span class="align1">Video 1</span>
+    <span class="align2">Video 2</span>
+    
+    <br>
+      <div>
+        <p align="center">
+          <iframe src="{{video_url}}" width="90%" height="500" frameborder="0" align="middle" style="display:block;"></iframe>
+        </p>
+      </div>
+
+    </div>
+
+    <script>
+      console.log("---------------- start -------");
+      var boss;
+      
+      
+      if (boss === undefined) {
+      console.log("---------------- registering the boss -------");
+      boss = window;
+      
+      function listener(event){
+        console.log(">>>>>>> "+ event.origin);
+        if ( event.origin !== "https://mlab-experiments.iat.sfu.ca" ) {
+            console.log("n");
+            return;
+        }
+        
+        if (event.data.act == "play") {
+          var allframes = document.getElementsByTagName("iframe");
+          
+          for (var f=0;f<allframes.length;f++)
+            allframes[f].contentWindow.postMessage({act: "stop", uuid: event.data.uuid},"https://mlab-experiments.iat.sfu.ca");
+        
+        }
+        
+      }
+
+    if (window.addEventListener){
+        addEventListener("message", listener, false)
+    } else {
+        attachEvent("onmessage", listener)
+    }
+}
+    </script>
+    <!--<div class="span6">-->
+    <!--  <div class="box">-->
+    <!--    Video 2-->
+    <!--    <iframe src="{{video2_url}}" width="480" height="315" frameborder="0" align="right"></iframe>-->
+    <!--  </div>-->
+    <!--</div>-->
+
+
+    <b>Question:</b>
+
+
+    <div align="center">
+      <cml:radios label="Which video has higher valence?" validates="required" name="v1">
+        <cml:radio label="Video 1" value="1"></cml:radio>
+        <cml:radio label="Video 2" value="2"></cml:radio>
+      </cml:radios>
+    </div>
+  </div>
