@@ -315,8 +315,8 @@ Code provided by Omid Alemi under the MIT License
 
     function play() {
         // close the other one
-        console.log("******* h= "+ window.innerHeight);
-        console.log("******* w= "+ window.innerWeight);
+        console.log("******* h= "+ document.documentElement.clientHeight);
+        console.log("******* w= "+ document.documentElement.clientWidth);
 
         if (window.addEventListener){
             addEventListener("message", listener, false)
