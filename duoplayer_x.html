@@ -52,7 +52,11 @@ Code provided by Omid Alemi under the MIT License
         var frameHeight = document.documentElement.clientHeight - 20;
         var animid;
 
-        // $(document)
+        $(document).on("ready", function (d) {
+            frameWidth = document.documentElement.clientWidth/2 - 80;
+            frameHeight = document.documentElement.clientHeight - 20;
+        });
+
         // Using the space bar to play/pause the animation
         $(document).on("keypress", function(e) {
             if (e.charCode == 32)
