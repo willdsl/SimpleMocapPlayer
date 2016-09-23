@@ -47,7 +47,7 @@ Code provided by Omid Alemi under the MIT License
     <script type="text/javascript">
         var scene1, camera1, scene2, camera2, renderer;
         var characters = [];
-        var playing = true;
+        var playing = false;
         var frameWidth = document.documentElement.clientWidth/2 - 80;
         var frameHeight = document.documentElement.clientHeight - 20;
         var animid;
@@ -352,6 +352,7 @@ Code provided by Omid Alemi under the MIT License
             initRenderer();
 
             document.getElementById("play").style.display = "none";
+            playing = true;
             animate();
         } else {
             console.log("nothing to load");
