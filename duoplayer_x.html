@@ -48,8 +48,8 @@ Code provided by Omid Alemi under the MIT License
         var scene1, camera1, scene2, camera2, renderer;
         var characters = [];
         var playing = true;
-        var frameWidth = window.innerWidth/2 - 80;
-        var frameHeight = window.innerHeight - 20;
+        var frameWidth = document.documentElement.clientWidth/2 - 80;
+        var frameHeight = document.documentElement.clientHeight - 20;
         var animid;
 
         // Using the space bar to play/pause the animation
@@ -77,7 +77,7 @@ Code provided by Omid Alemi under the MIT License
                 camera2.aspect = frameWidth / frameHeight;
                 camera2.updateProjectionMatrix();
 
-                renderer.setSize(window.innerWidth-10, frameHeight);
+                renderer.setSize(document.documentElement.clientWidth-10, frameHeight);
             }             
         });
 
@@ -166,7 +166,7 @@ Code provided by Omid Alemi under the MIT License
             renderer = new THREE.WebGLRenderer({
                 antialias: true
             });
-            renderer.setSize(window.innerWidth-10, frameHeight);
+            renderer.setSize(document.documentElement.clientWidth-10, frameHeight);
             renderer.gammaInput = true;
             renderer.gammaOutput = true;
             renderer.setPixelRatio(window.devicePixelRatio);
@@ -215,7 +215,7 @@ Code provided by Omid Alemi under the MIT License
             renderer.render( scene1, camera1 );
 
             renderer.clearDepth(); // important! clear the depth buffer
-            renderer.setViewport( window.innerWidth/2 +20 , 0, frameWidth, frameHeight );
+            renderer.setViewport( document.documentElement.clientWidth/2 +20 , 0, frameWidth, frameHeight );
             renderer.render( scene2, camera2 );            
         }
 
