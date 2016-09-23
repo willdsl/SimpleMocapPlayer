@@ -55,6 +55,9 @@ Code provided by Omid Alemi under the MIT License
         $(document).on("ready", function (d) {
             frameWidth = document.documentElement.clientWidth/2 - 80;
             frameHeight = document.documentElement.clientHeight - 20;
+
+            console.log("******* h= "+ frameHeight);
+            console.log("******* w= "+ frameWidth);
         });
 
         // Using the space bar to play/pause the animation
@@ -148,7 +151,6 @@ Code provided by Omid Alemi under the MIT License
         }
 
         function init() {
-            console.log(frameWidth);
             scene1 = new THREE.Scene();
             camera1 = new THREE.PerspectiveCamera(30, frameWidth / frameHeight, 1, 2000);
             camera1.position.set(0, 80, 0);
@@ -320,9 +322,7 @@ Code provided by Omid Alemi under the MIT License
         }
 
     function play() {
-        // close the other one
-        console.log("******* h= "+ document.documentElement.clientHeight);
-        console.log("******* w= "+ document.documentElement.clientWidth);
+        // close the other one        
 
         if (window.addEventListener){
             addEventListener("message", listener, false)
