@@ -52,6 +52,11 @@ Code provided by Omid Alemi under the MIT License
         var frameHeight = document.documentElement.clientHeight - 20;
         var animid;
 
+        var cameraPositionY = 80;
+        var cameraPositionZ = 400;
+        var cameraPerspective = 30;
+        var cameraDistance = 3000;
+
         $(document).ready(function () {
             
         });
@@ -148,17 +153,17 @@ Code provided by Omid Alemi under the MIT License
 
         function init() {
             scene1 = new THREE.Scene();
-            camera1 = new THREE.PerspectiveCamera(30, frameWidth / frameHeight, 1, 2000);
-            camera1.position.set(0, 80, 0);
-            camera1.position.z = 400;
+            camera1 = new THREE.PerspectiveCamera(cameraPerspective, frameWidth / frameHeight, 1, cameraDistance);
+            camera1.position.set(0, cameraPositionY, 0);
+            camera1.position.z = cameraPositionZ;
             scene1.add(camera1);
 
             set_the_scene(scene1);
 
             scene2 = new THREE.Scene();
-            camera2 = new THREE.PerspectiveCamera(30, frameWidth / frameHeight, 1, 2000);
-            camera2.position.set(0, 80, 0);
-            camera2.position.z = 400;
+            camera2 = new THREE.PerspectiveCamera(cameraPerspective, frameWidth / frameHeight, 1, cameraDistance);
+            camera2.position.set(0, cameraPositionY, 0);
+            camera2.position.z = cameraPositionZ;
             scene1.add(camera2);
 
             set_the_scene(scene2);
