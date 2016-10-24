@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<!-- WebGl Mocap Player 
+Code provided by Omid Alemi under the MIT License
+ -->
+<html lang="en">
+
+<head>
+    <title>WebGL Frame Test</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+    <style>
+        iframe {
+            position: relative;
+            margin: 20px auto;
+            display: block;
+        }
+    </style>
+</head>
+<script>
+      console.log("---------------- start -------");
+      var boss;
+      
+      
+      if (boss === undefined) {
+      console.log("---------------- registering the boss -------");
+      boss = window;
+      
+      function listener(event){
+        console.log(">>>>>>> "+ event.origin);
+        if ( event.origin !== "https://mlab-experiments.iat.sfu.ca" ) {
+            console.log("n");
+            return;
+        }
+        
+        if (event.data.act == "play") {
+          var allframes = document.getElementsByTagName("iframe");
+          
+          for (var f=0;f<allframes.length;f++)
+            allframes[f].contentWindow.postMessage({act: "stop", uuid: event.data.uuid},"https://mlab-experiments.iat.sfu.ca");
+        
+        }
+        
+      }
+
+    if (window.addEventListener){
+        addEventListener("message", listener, false)
+    } else {
+        attachEvent("onmessage", listener)
+    }
+}
+    </script>
+
+<body>
+    <iframe src="duoplayer_x.html?file1=SampleWalk.bvh&file2=SampleWalk.bvh" width="70%" height="500" frameborder=0></iframe>    
+
+    <iframe src="duoplayer_x.html?file1=SampleWalk.bvh&file2=SampleWalk.bvh" width="70%" height="500" frameborder=0></iframe>
+
+    <iframe src="duoplayer_x.html?file1=SampleWalk.bvh&file2=SampleWalk.bvh" width="70%" height="500" frameborder=0></iframe>
+
+    <iframe src="duoplayer_x.html?file1=SampleWalk.bvh&file2=SampleWalk.bvh" width="70%" height="500" frameborder=0></iframe>
+
+    <iframe src="duoplayer_x.html?file1=SampleWalk.bvh&file2=SampleWalk.bvh" width="70%" height="500" frameborder=0></iframe>
+
+    <iframe src="duoplayer_x.html?file1=SampleWalk.bvh&file2=SampleWalk.bvh" width="70%" height="500" frameborder=0></iframe>
+
+</body>
+</html>
