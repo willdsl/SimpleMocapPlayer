@@ -310,7 +310,8 @@ Code provided by Omid Alemi under the MIT License
         this.renderer = null;    
         characters = [];
 
-        window.location = "done_replay.html?sender="+encodeURIComponent(window.location.href);
+        console.log(window.location.href);
+        window.location = "done_replay.html?file1="+getUrlParameter('file1')+"&file2="+getUrlParameter('file2');
     }
 
     function listener(event){

@@ -44,11 +44,13 @@ Code provided by Omid Alemi under the MIT License
 
     </div>
 
-    <script>
+    <script> 
+        console.log(">> "+ decodeURIComponent(getUrlParameter('sender')));
         function replay() {
-            url = getUrlParameter('sender');        
-            if (url !== undefined)
-                window.location = url+"&autoplay=true";
+            file1 = getUrlParameter('file1');
+            file2 = getUrlParameter('file2');        
+            if (file1 !== undefined && file2 !== undefined ) 
+                window.location = "duoplayer_x.html?file1="+file1+"&file2="+file2+"&autoplay=true";
         }
 
         function getUrlParameter(sParam) {
