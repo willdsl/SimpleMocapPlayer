@@ -36,6 +36,27 @@ Code provided by Omid Alemi under the MIT License
             font-size: 42px;
             cursor: pointer;
         }
+
+        #cameraControl {
+            width: 99%;
+            height: 50px;
+            background-color: #f0f0f0;
+            position: fixed;
+            bottom: 0;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+            display: none;
+        }
+
+        #btnCamReset {
+            width: 150px;
+            height: 30px;            
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px auto;
+            color: #404040;
+        }
     </style>
 </head>
 
@@ -43,6 +64,11 @@ Code provided by Omid Alemi under the MIT License
     <div id="play">
         <button id="btnPlay" onclick="play()">Play</button>
     </div>
+
+    <div id="cameraControl">
+        <button id="btnCamReset" onclick="resetCam()">Reset Camera</button>
+    </div>
+
 
     <script type="text/javascript">
         var scene1, camera1, scene2, camera2, renderer;
@@ -83,12 +109,15 @@ Code provided by Omid Alemi under the MIT License
         // Update the renderer and camera when resizeing the window
         $(window).on("resize", function(e) {
             if (playing){
+                frameWidth = document.documentElement.clientWidth/2 - 80;
+                frameHeight = document.documentElement.clientHeight - 20;
+
                 camera1.aspect = frameWidth / frameHeight;
                 camera1.updateProjectionMatrix();
 
                 camera2.aspect = frameWidth / frameHeight;
                 camera2.updateProjectionMatrix();
-
+                
                 renderer.setSize(document.documentElement.clientWidth-10, frameHeight);
             }             
         });
@@ -249,6 +278,13 @@ Code provided by Omid Alemi under the MIT License
     <script>   
     // var mylock = Math.random();    
 
+    function resetCam() {
+        camera2.position.set(0, cameraPositionY, cameraPositionZ);
+        camera1.position.set(0, cameraPositionY, cameraPositionZ);
+        controls1.reset();
+        controls2.reset();
+    }
+
     function empty(elem) {
         while (elem.lastChild) elem.removeChild(elem.lastChild);
     }
@@ -328,6 +364,7 @@ Code provided by Omid Alemi under the MIT License
 
     function play() {
         // close the other one        
+        document.getElementById("cameraControl").style.display = "inherit";
 
         frameWidth = document.documentElement.clientWidth/2 - 80;
         frameHeight = document.documentElement.clientHeight - 20;
